@@ -11,8 +11,9 @@
 
   let publicEmailAddress,
     publicEmailPass,
-    publicEmailFetchInteval,
-    publicEmailServer,publicEmailIMAP,
+    publicEmailFetchInterval,
+    publicEmailServer,
+    publicEmailIMAP,
     publicEmailPOP3;
 
   let promise = loadData();
@@ -22,27 +23,29 @@
     ToS = settings.m_term_of_services == "Y";
     publicEmailAddress = settings.m_mp_settings.m_public_email.m_address;
     publicEmailPass = settings.m_mp_settings.m_public_email.m_password;
-    publicEmailFetchInteval =
+    publicEmailFetchInterval =
       settings.m_mp_settings.m_public_email.m_fetching_interval_by_minute;
     publicEmailServer =
       settings.m_mp_settings.m_public_email.m_incoming_mail_server;
     publicEmailIMAP = settings.m_mp_settings.m_public_email.m_income_imap;
     publicEmailPOP3 = settings.m_mp_settings.m_public_email.m_income_pop3;
+
     return settings;
   }
 
   let saveSettings = async () => {
     let postInfo = {
-      "mpCode":"Default",
+      mpCode: "Default",
       ToS,
       publicEmailAddress,
       publicEmailPass,
-      publicEmailFetchInteval,
+      publicEmailFetchInterval,
       publicEmailIMAP,
       publicEmailPOP3,
+      publicEmailServer,
     };
     console.log("postInfo: ", postInfo);
-    let res = await httpPost("/saveSettings", postInfo)
+    let res = await httpPost("/saveSettings", postInfo);
     console.log("res: ", res);
   };
 </script>
@@ -87,7 +90,7 @@
             <div class="col-4">
               <input
                 class="form-control"
-                bind:value={publicEmailFetchInteval}
+                bind:value={publicEmailFetchInterval}
               />
             </div>
             <div class="col-4">Minutes</div>
@@ -96,30 +99,21 @@
           <div class="row">
             <div class="col-6">Mailserver Host:</div>
             <div class="col-6">
-              <input
-                class="form-control"
-                value={publicEmailServer}
-              />
+              <input class="form-control" bind:value={publicEmailServer} />
             </div>
           </div>
 
           <div class="row">
             <div class="col-6">IMAP Port:</div>
             <div class="col-6">
-              <input
-                class="form-control"
-                value={publicEmailIMAP}
-              />
+              <input class="form-control" bind:value={publicEmailIMAP} />
             </div>
           </div>
 
           <div class="row">
             <div class="col-6">POP3 Port:</div>
             <div class="col-6">
-              <input
-                class="form-control"
-                value={publicEmailPOP3}
-              />
+              <input class="form-control" bind:value={publicEmailPOP3} />
             </div>
           </div>
 
