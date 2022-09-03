@@ -5,10 +5,7 @@
   import { activeTab } from "./store/stores";
   export let items = [];
   const handleClick = (tabValue) => () => {
-    console.log("tabValue before", get(activeTab));
-    console.log("tabValue", tabValue);
     activeTab.set(tabValue);
-    console.log("tabValue after", get(activeTab));
   };
 
 	let activeTab_;

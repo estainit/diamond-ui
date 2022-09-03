@@ -4,11 +4,6 @@
 
   let settings = null;
   let ToS = false;
-
-  onMount(async () => {
-    loadData();
-  });
-
   let publicEmailAddress,
     publicEmailPass,
     publicEmailFetchInterval,
@@ -16,19 +11,25 @@
     publicEmailIMAP,
     publicEmailPOP3;
 
+  onMount(async () => {
+    loadData();
+  });
+
   let promise = loadData();
   async function loadData() {
     settings = await httpGet("/profile");
     console.log(settings);
-    ToS = settings.m_term_of_services == "Y";
-    publicEmailAddress = settings.m_mp_settings.m_public_email.m_address;
-    publicEmailPass = settings.m_mp_settings.m_public_email.m_password;
+    let the_settings = settings.m_mp_settings;
+    ToS = the_settings.m_term_of_services == "Y";
+    console.log("ToS", the_settings.m_term_of_services);
+    console.log("ToS", ToS);
+    publicEmailAddress = the_settings.m_public_email.m_address;
+    publicEmailPass = the_settings.m_public_email.m_password;
     publicEmailFetchInterval =
-      settings.m_mp_settings.m_public_email.m_fetching_interval_by_minute;
-    publicEmailServer =
-      settings.m_mp_settings.m_public_email.m_incoming_mail_server;
-    publicEmailIMAP = settings.m_mp_settings.m_public_email.m_income_imap;
-    publicEmailPOP3 = settings.m_mp_settings.m_public_email.m_income_pop3;
+      the_settings.m_public_email.m_fetching_interval_by_minute;
+    publicEmailServer = the_settings.m_public_email.m_incoming_mail_server;
+    publicEmailIMAP = the_settings.m_public_email.m_income_imap;
+    publicEmailPOP3 = the_settings.m_public_email.m_income_pop3;
 
     return settings;
   }
@@ -50,7 +51,7 @@
   };
 </script>
 
-<h2>Settings</h2>
+<h2>Machine Settings</h2>
 <div>
   {#await promise}
     <p>...waiting</p>
