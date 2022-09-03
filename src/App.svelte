@@ -7,7 +7,6 @@
   import Home from "./lib/Home.svelte";
   import nodesList from "./lib/NodesList.svelte";
   import { apiData } from "./lib/store/nodes";
-  import { machineProfile } from "./lib/store/stores";
   import { httpGet } from "./server/server";
   export let url = "";
 
@@ -37,10 +36,6 @@
 </script>
 
 <Router {url}>
-  <nav>
-    <Link class="nav-link" to="/">Home</Link>
-    <Link class="nav-link" to="/nodes">nodes</Link>
-  </nav>
   <div>
     <Route path="/" component={Home} />
     <Route path="/nodes" component={nodesList} />
