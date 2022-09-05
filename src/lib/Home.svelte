@@ -2,6 +2,7 @@
   import { get, writable } from "svelte/store";
   import Clock from "./components/Clock.svelte";
   import Neighbors from "./components/Neighbors.svelte";
+  import Wallet from "./components/Wallet/Wallet.svelte";
   import Monitor from "./components/Monitor/Monitor.svelte";
   import Settings from "./components/Settings/Settings.svelte";
   import Tab2 from "./Tab2.svelte";
@@ -13,9 +14,10 @@
   // List of tab items with labels, values and assigned components
   let items = [
     { label: "Monitor", value: 1, component: Monitor },
-    { label: "Neighbors", value: 2, component: Neighbors },
-    { label: "Settings", value: 3, component: Settings },
-    { label: "test", value: 4, component: Tab2 },
+    { label: "Wallet", value: 2, component: Wallet },
+    { label: "Neighbors", value: 3, component: Neighbors },
+    { label: "Settings", value: 4, component: Settings },
+    { label: "test", value: 5, component: Tab2 },
   ];
 
   let isSynchronizing = true;

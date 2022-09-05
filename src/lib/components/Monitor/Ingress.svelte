@@ -11,6 +11,7 @@
   let promiseInboxFiles = loadInboxFiles();
   async function loadInboxFiles() {
     hardInboxFiles = await httpGet("/hardInboxFiles");
+    console.log('hardInboxFiles', hardInboxFiles)
     return hardInboxFiles;
   }
 
@@ -58,7 +59,7 @@
         <span>{fileName}</span>
       </div>
     {/each}
-    <button class="btn btn-success btn-sm m-1">2. Read harddick manually</button
+    <button class="btn btn-success btn-sm m-1" on:click={loadInboxFiles}>2. Read harddick manually</button
     >
   {:catch error}
     <p style="color: red">{error}</p>
@@ -91,7 +92,7 @@
         {/each}
       </tbody>
     </table>
-    <button class="btn btn-success btn-sm m-1"
+    <button class="btn btn-success btn-sm m-1" on:click={loadParsingQ}
       >3. Pull from parsing Q manually</button
     >
   {:catch error}
