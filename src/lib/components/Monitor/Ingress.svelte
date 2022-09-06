@@ -11,7 +11,7 @@
   let promiseInboxFiles = loadInboxFiles();
   async function loadInboxFiles() {
     hardInboxFiles = await httpGet("/hardInboxFiles");
-    console.log('hardInboxFiles', hardInboxFiles)
+    console.log("hardInboxFiles", hardInboxFiles);
     return hardInboxFiles;
   }
 
@@ -53,13 +53,16 @@
     <div class="row">
       <h5>Files on Hard drive</h5>
     </div>
-    {#each inboxFiles as fileName, inx}
-      <div style="text-align: left; width: 300px;">
-        <span>&nbsp;{inx + 1}.&nbsp;</span>
-        <span>{fileName}</span>
-      </div>
-    {/each}
-    <button class="btn btn-success btn-sm m-1" on:click={loadInboxFiles}>2. Read harddick manually</button
+    <div style="overflow:scroll; height:400px;">
+      {#each inboxFiles as fileName, inx}
+        <div style="text-align: left; width: 300px;">
+          <span>&nbsp;{inx + 1}.&nbsp;</span>
+          <span>{fileName}</span>
+        </div>
+      {/each}
+    </div>
+    <button class="btn btn-success btn-sm m-1" on:click={loadInboxFiles}
+      >2. Read harddick manually</button
     >
   {:catch error}
     <p style="color: red">{error}</p>
@@ -72,26 +75,28 @@
     <div class="row">
       <h5>Records paring Q</h5>
     </div>
-    <table class="table table-sm">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Title</th>
-          <th scope="col">Attempts</th>
-          <th scope="col">Prerequisities</th>
-        </tr>
-      </thead>
-      <tbody>
-        {#each parsingQRecords as a_record, inx}
-          <tr title={a_record["pq_code"]}>
-            <th scope="row">{inx + 1}</th>
-            <td>{a_record["pq_type"]}</td>
-            <td>{a_record["pq_parse_attempts"]}</td>
-            <td>{prettifyPrereq(a_record["pq_prerequisites"])}</td>
+    <div style="overflow:scroll; height:400px;">
+      <table class="table table-sm">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Title</th>
+            <th scope="col">Attempts</th>
+            <th scope="col">Prerequisities</th>
           </tr>
-        {/each}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {#each parsingQRecords as a_record, inx}
+            <tr title={a_record["pq_code"]}>
+              <th scope="row">{inx + 1}</th>
+              <td>{a_record["pq_type"]}</td>
+              <td>{a_record["pq_parse_attempts"]}</td>
+              <td>{prettifyPrereq(a_record["pq_prerequisites"])}</td>
+            </tr>
+          {/each}
+        </tbody>
+      </table>
+    </div>
     <button class="btn btn-success btn-sm m-1" on:click={loadParsingQ}
       >3. Pull from parsing Q manually</button
     >
