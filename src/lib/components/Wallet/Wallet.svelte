@@ -4,9 +4,19 @@
   import Remittance from "./Remittance.svelte";
 
   let childLoadFunds;
+  let childDeselectCoins;
+  let childUpdSelectedCoins;
 
-  function callChildLoadFunds() {
+  function callChildToLoadFunds() {
     childLoadFunds();
+  }
+
+  function callChildDeselectCoins() {
+    childDeselectCoins();
+  }
+
+  function callChildToUpdSelectedCoins(sCoins) {
+    childUpdSelectedCoins(sCoins);
   }
 </script>
 
@@ -17,10 +27,17 @@
     </div>
     <div class="row">
       <div class="col-6">
-        <Coins />
+        <Coins
+          bind:childDeselectCoins
+          callParentToUpdSelectedCoins={(sCoins) => callChildToUpdSelectedCoins(sCoins)}
+        />
       </div>
       <div class="col-6">
-        <Remittance callParentToLoadFunds={() => callChildLoadFunds()} />
+        <Remittance
+        bind:childUpdSelectedCoins
+          callParentToLoadFunds={() => callChildToLoadFunds()}
+          callParentToDeselectCoins={() => callChildDeselectCoins()}
+        />
       </div>
     </div>
   </div>

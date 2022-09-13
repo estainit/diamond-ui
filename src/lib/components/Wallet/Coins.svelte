@@ -8,6 +8,8 @@
     mapBlockTypeToColor,
     numberWithCommas,
     getColorCode,
+    arrayRemove,
+    arrayContains,
   } from "../../cutils";
   //   import keccak256 from '../../../../public/vendor/keccak256';
 
@@ -21,19 +23,41 @@
   async function loadFunds() {
     coins = await httpGet("/getCoins");
     console.log("coins", coins);
+    coins.forEach((aCoin) => {
+        coinsInfo[aCoin["coin_code"]] = aCoin;
+    });
     return coins;
   }
 
+  let coinsInfo = {};
   const refreshCoins = async () => {
     console.log("refreshCoins", coins);
     coins = await httpGet("/refreshCoins");
-    console.log("coins in refresh", coins);
+    coins.forEach((aCoin) => {
+        coinsInfo[aCoin["coin_code"]] = aCoin;
+    });
+  };
+
+  let selectedCoins = [];
+  const chkChg = (e) => {
+    if (e.target.checked) {
+      selectedCoins.push(coinsInfo[e.target.id]);
+    } else {
+      selectedCoins = arrayRemove(selectedCoins, e.target.id, 'coin_code');
+    }
+    callParentToUpdSelectedCoins(selectedCoins);
+  };
+
+  export let callParentToUpdSelectedCoins = (sCoins) => {};
+  export const childDeselectCoins = () => {
+    alert("childDeselectCoins");
+    selectedCoins = [];
   };
 </script>
 
 {#await promiseCoins}
   <p>...waiting for coins info</p>
-{:then theFunds}
+{:then theCoins}
   <div class="row">
     <h5>Coins</h5>
   </div>
@@ -43,31 +67,37 @@
         <tr>
           <th scope="col">#</th>
           <th scope="col">Coin</th>
-          <th scope="col">Maturation Date</th>
           <th scope="col">Amount</th>
           <th scope="col">Spend</th>
         </tr>
       </thead>
       <tbody>
-        {#each theFunds as aRecord, inx}
-          <tr title={aRecord["sq_code"]}>
+        {#each theCoins as aCoin, inx}
+          <tr title={aCoin["sq_code"]}>
+            <td>{inx + 1}</td>
+            <td
+              style="background-color:#{getColorCode(
+                aCoin['wf_address']
+              )} ; font-size:15px"
+              >{hash32c(aCoin["wf_trx_hash"])}:{aCoin["wf_o_index"]}
+              <br />
+              Maturation Date: {aCoin["wf_mature_date"]}
+            </td>
+            <td title={numberWithCommas(aCoin["wf_o_value"])}
+              >{numberWithCommas(convertBPaiToPai(aCoin["wf_o_value"]))}</td
+            >
             <td>
               <input
                 type="checkbox"
-                id="{aRecord['wf_trx_hash']}:{aRecord['wf_o_index']}"
-                checked={false}
+                id="{aCoin['coin_code']}"
+                checked={arrayContains(
+                  selectedCoins,
+                  aCoin["coin_code"]
+                )}
                 disabled={false}
+                on:change={(e) => chkChg(e)}
               />
             </td>
-            <th scope="row">{inx + 1}</th>
-            <td
-              style="background-color:#{getColorCode(aRecord['wf_address'])} ;"
-              >{hash32c(aRecord["wf_trx_hash"])}:{aRecord["wf_o_index"]}</td
-            >
-            <td>{aRecord["wf_mature_date"]} </td>
-            <td title={numberWithCommas(aRecord["wf_o_value"])}
-              >{numberWithCommas(convertBPaiToPai(aRecord["wf_o_value"]))}</td
-            >
           </tr>
         {/each}
       </tbody>

@@ -1,3 +1,5 @@
+export const BILLION = 1000000000;
+
 export const mapBlockTypeToColor = (bType) => {
   let theMap = {
     Genesis: "#2fe329",
@@ -23,7 +25,11 @@ export const hash32c = (s) => {
 };
 
 export const convertBPaiToPai = (v) => {
-  return parseInt(v / 1000000000);
+  return v / 1000000000;
+};
+
+export const convertBPaiToPaiInt = (v) => {
+  return Math.trunc(v / 1000000000);
 };
 
 export const numberWithCommas = (x) => {
@@ -37,5 +43,23 @@ export const getColorCode = (x) => {
 };
 
 export const shortBech16 = (s) => {
-  return s.substring(0, 5) +'...'+ s.substring(48, s.length);
+  return s.substring(0, 5) + "..." + s.substring(48, s.length);
+};
+
+export const arrayRemove = (array, item, attrName) => {
+  console.log("typeof(item)", typeof array[0]);
+  if (typeof array[0] === "object") {
+    var index = array.findIndex((e) => e[attrName] === item);
+    console.log(" found in index ", index);
+    array.splice(index, 1);
+    return array;
+  } else {
+    var new_array = [];
+    new_array = array.filter((ar) => ar != item);
+    return new_array;
+  }
+};
+
+export const arrayContains = (array, item) => {
+  return array.indexOf(item) > -1;
 };
