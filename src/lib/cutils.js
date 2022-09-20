@@ -24,11 +24,11 @@ export const hash32c = (s) => {
   return s.substring(0, 32);
 };
 
-export const convertBPaiToPai = (v) => {
+export const convertNanoPaiToPai = (v) => {
   return v / 1000000000;
 };
 
-export const convertBPaiToPaiInt = (v) => {
+export const convertNanoPaiToPaiInt = (v) => {
   return Math.trunc(v / 1000000000);
 };
 

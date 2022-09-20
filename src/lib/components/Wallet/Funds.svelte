@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import { httpGet } from "../../../server/server";
   import {
-    convertBPaiToPai,
+    convertNanoPaiToPai,
     getColorCode,
     hash32c,
     mapBlockTypeToColor,
@@ -57,7 +57,7 @@
             <td title="{theFunds.funds[anAddress]['mat_sum']} BPai"
               >{theFunds.funds[anAddress]["mat_sum"]
                 ? numberWithCommas(
-                    convertBPaiToPai(theFunds.funds[anAddress]["mat_sum"])
+                    convertNanoPaiToPai(theFunds.funds[anAddress]["mat_sum"])
                   )
                 : 0} PAIs
             </td>

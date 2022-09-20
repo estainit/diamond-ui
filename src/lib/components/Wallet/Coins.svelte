@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import { httpGet } from "../../../server/server";
   import {
-    convertBPaiToPai,
+    convertNanoPaiToPai,
     hash6c,
     hash32c,
     mapBlockTypeToColor,
@@ -84,7 +84,7 @@
               Maturation Date: {aCoin["wf_mature_date"]}
             </td>
             <td title={numberWithCommas(aCoin["wf_o_value"])}
-              >{numberWithCommas(convertBPaiToPai(aCoin["wf_o_value"]))}</td
+              >{numberWithCommas(convertNanoPaiToPai(aCoin["wf_o_value"]))}</td
             >
             <td>
               <input

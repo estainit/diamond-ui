@@ -3,7 +3,7 @@
   import { httpGet, httpPost } from "../../../server/server";
   import {
     BILLION,
-    convertBPaiToPai,
+    convertNanoPaiToPai,
     getColorCode,
     hash32c,
     mapBlockTypeToColor,
@@ -35,26 +35,29 @@
   export let callParentToLoadFunds = () => {};
   export let callParentToDeselectCoins = () => {};
 
-  let txRecepient = "";
+  let txRecipient = "";
   let txAmount = null;
-  let txFeeCalcMethod = "auto";
+  let txFeeCalcMethod = "minFee";
   let txFee = 0;
-  let changeBackMod = "generateNewAddress";
+  let changeBackMod = "aNewAddress";
   let changeBackAmount = null;
   let changeBackAddress = "";
   let selectedCoins = [];
   let selectedCoinsAmount = 0;
+  let errorMessage = "";
+  let notiMessage = "";
+  let sucessMessage = "";
 
   $: changeBackAmount = numberWithCommas(
-    convertBPaiToPai(selectedCoinsAmount - txAmount * BILLION)
+    convertNanoPaiToPai(selectedCoinsAmount - txAmount * BILLION)
   );
 
   const resetForm = async () => {
-    txRecepient = "";
+    txRecipient = "";
     txAmount = null;
-    txFeeCalcMethod = "auto";
+    txFeeCalcMethod = "minFee";
     txFee = 0;
-    changeBackMod = "generateNewAddress";
+    changeBackMod = "aNewAddress";
     changeBackAmount = null;
     changeBackAddress = "";
 
@@ -62,12 +65,13 @@
   };
 
   const signTrx = async () => {
+    resetMsgs();
     let selCoins = [];
     selectedCoins.forEach((element) => {
       selCoins.push(element["coin_code"]);
     });
     let postInfo = {
-      txRecepient,
+      txRecipient,
       txAmount,
       txFeeCalcMethod,
       txFee,
@@ -80,6 +84,18 @@
     console.log("postInfo: ", postInfo);
     let res = await httpPost("/signTrxAndPushToBuffer", postInfo);
     console.log("res: ", res);
+
+    if (res.status) {
+      sucessMessage = res.message;
+    } else if (!res.status) {
+      errorMessage = res.message;
+    }
+  };
+
+  const resetMsgs = () => {
+    errorMessage = "";
+    notiMessage = "";
+    sucessMessage = "";
   };
 
   export const childUpdSelectedCoins = (sCoins) => {
@@ -94,6 +110,17 @@
 
 <div class="row">
   <h5>Remittance</h5>
+  {#if errorMessage != ""}
+    <div class="bg-danger" style="color:aliceblue">{errorMessage}</div>
+  {/if}
+
+  {#if notiMessage != ""}
+    <div class="bg-warning" style="color:aliceblue">{notiMessage}</div>
+  {/if}
+
+  {#if sucessMessage != ""}
+    <div class="bg-success" style="color:aliceblue">{sucessMessage}</div>
+  {/if}
 </div>
 <div class="row p-2" style="background-color: #eeeeef;">
   <div class="row">
@@ -104,7 +131,7 @@
           <td style="text-align: left;"
             ><input
               type="text"
-              bind:value={txRecepient}
+              bind:value={txRecipient}
               placeholder="im1..."
             /></td
           >
@@ -120,7 +147,7 @@
           <td
             style="text-align: left;"
             title="{numberWithCommas(selectedCoinsAmount)} BPAIs"
-            >{numberWithCommas(convertBPaiToPai(selectedCoinsAmount))} PAIs</td
+            >{numberWithCommas(convertNanoPaiToPai(selectedCoinsAmount))} PAIs</td
           >
         </tr>
         <tr class="bg-warning">
@@ -131,12 +158,16 @@
             ><input type="text" bind:value={txFee} placeholder="0" />
             <br />
             <label>
-              <input type="radio" bind:group={txFeeCalcMethod} value="exact" />
+              <input
+                type="radio"
+                bind:group={txFeeCalcMethod}
+                value="exactFee"
+              />
               Pay exact fee
             </label>
 
             <label>
-              <input type="radio" bind:group={txFeeCalcMethod} value="auto" />
+              <input type="radio" bind:group={txFeeCalcMethod} value="minFee" />
               Pay less (if it is posiible)
             </label>
           </td>
@@ -163,14 +194,14 @@
               type="text"
               bind:value={changeBackAddress}
               placeholder="im1..."
-              disabled={changeBackMod != "thisAddress"}
+              disabled={changeBackMod != "exactAddress"}
             />
             <br />
             <label>
               <input
                 type="radio"
                 bind:group={changeBackMod}
-                value="generateNewAddress"
+                value="aNewAddress"
               />
               Generate a new address
             </label>
@@ -178,7 +209,7 @@
               <input
                 type="radio"
                 bind:group={changeBackMod}
-                value="useBackerAddress"
+                value="backerAddress"
               />
               Use backer address
             </label>
@@ -186,7 +217,7 @@
               <input
                 type="radio"
                 bind:group={changeBackMod}
-                value="thisAddress"
+                value="exactAddress"
               />
               Manually
             </label>
